@@ -1,4 +1,4 @@
-package strongo_validation
+package validation
 
 import "testing"
 
