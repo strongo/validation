@@ -7,8 +7,12 @@ import (
 )
 
 var errValidation = errors.New("validation error")
-var errBadRequest = fmt.Errorf("%w: bad request", errValidation)
-var errBadRecord = fmt.Errorf("%w: bad record", errValidation)
+
+var errBadRequest = fmt.Errorf("%w: invalid request", errValidation)
+var errBadRequestFieldValue = fmt.Errorf("%w: bad field value", errBadRequest)
+
+var errBadRecord = fmt.Errorf("%w: invalid record", errValidation)
+var errBadRecordFieldValue = fmt.Errorf("%w: invalid field value", errBadRecord)
 
 // NewBadRequestError create error
 func NewBadRequestError(err error) error {
@@ -33,30 +37,39 @@ func (v ErrBadFieldValue) Unwrap() error {
 // NewErrBadRequestFieldValue creates an error for a bad request field value
 func NewErrBadRequestFieldValue(field, message string) ErrBadFieldValue {
 	if strings.TrimSpace(field) == "" {
-		panic(fmt.Sprintf("field parameters is empty string, message: %v", message))
+		panic("field parameters is required")
+	}
+	if strings.TrimSpace(message) == "" {
+		panic("message parameters is required")
 	}
 	return ErrBadFieldValue{
 		Field:   field,
 		Message: message,
-		err:     errBadRequest,
+		err:     errBadRequestFieldValue,
 	}
 }
 
 // NewErrBadRecordFieldValue creates an error for a bad record field value
-func NewErrBadRecordFieldValue(field, message string) *ErrBadFieldValue {
-	return &ErrBadFieldValue{
+func NewErrBadRecordFieldValue(field, message string) ErrBadFieldValue {
+	if field == "" {
+		panic("field is a required parameter")
+	}
+	if message == "" {
+		panic("message is a required parameter")
+	}
+	return ErrBadFieldValue{
 		Field:   field,
 		Message: message,
-		err:     errBadRecord,
+		err:     errBadRecordFieldValue,
 	}
 }
 
 // NewValidationError creates a common validation error
-func NewValidationError(err error, message string) error {
+func NewValidationError(message string) error {
 	if message == "" {
-		message = errValidation.Error()
+		panic("message is a required parameter")
 	}
-	return fmt.Errorf("%v: %w", message, err)
+	return fmt.Errorf("%w: %v", errValidation, message)
 }
 
 // IsValidationError checks if provided errors is a validation error
@@ -69,6 +82,16 @@ func IsBadRequestError(err error) bool {
 	return errors.Is(err, errBadRequest)
 }
 
+func IsBadFieldValueError(err error) bool {
+	if errors.Is(err, errBadRequestFieldValue) {
+		return true
+	}
+	if errors.Is(err, errBadRecordFieldValue) {
+		return true
+	}
+	return false
+}
+
 // IsBadRecordError checks if provided errors is a validation error
 func IsBadRecordError(err error) bool {
 	return errors.Is(err, errBadRecord)
@@ -76,7 +99,7 @@ func IsBadRecordError(err error) bool {
 
 // NewErrRecordIsMissingRequiredField creates an error for a missing required field in a record
 func NewErrRecordIsMissingRequiredField(field string) ErrBadFieldValue {
-	return NewErrBadRequestFieldValue(field, "missing required field")
+	return NewErrBadRecordFieldValue(field, "missing required field")
 }
 
 // NewErrRequestIsMissingRequiredField creates an error for a missing required field in a request
