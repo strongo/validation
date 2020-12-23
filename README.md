@@ -22,6 +22,9 @@ You can check if an `err error` is a validation error or a specific validation e
 - `IsBadRecordError(err error) bool`
 - `IsBadFieldValueError(err error) bool`
 
+## Documentation
+
+https://pkg.go.dev/github.com/strongo/validation
 
 ## Usage
 
