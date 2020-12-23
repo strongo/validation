@@ -1,5 +1,7 @@
 package validation
 
+// github.com/strongo/validation
+
 import (
 	"errors"
 	"fmt"
