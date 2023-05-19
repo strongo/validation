@@ -11,6 +11,7 @@ on:
       - '**'
 
 jobs:
+
   standard_go_workflow:
     uses: strongo/go-ci-action/.github/workflows/workflow.yml@main
     secrets:
