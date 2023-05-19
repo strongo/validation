@@ -12,7 +12,7 @@ on:
 
 jobs:
 
-  standard_go_workflow:
+  strongo_workflow:
     uses: strongo/go-ci-action/.github/workflows/workflow.yml@main
     secrets:
       gh_token: ${{ secrets.GITHUB_TOKEN }}
