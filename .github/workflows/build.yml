@@ -30,4 +30,6 @@ jobs:
       with:
         go-version: ${{ matrix.go-version }}
 
-    - uses: strongo/go-ci-action@v1.0.3
+    - uses: strongo/go-ci-action@v1.0.4
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
