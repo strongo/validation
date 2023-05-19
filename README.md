@@ -34,6 +34,8 @@ This package is known to be used in next open source projects:
 
 Please submit a pull request to add your project here if you use this package in an open source project.
 
+## Versioning
+The version is auto-incremented by CI/CD pipeline on push to main branch.
 
 ## LICENSE
 
