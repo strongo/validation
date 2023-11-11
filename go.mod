@@ -1,3 +1,3 @@
 module github.com/strongo/validation
 
-go 1.20
+go 1.21
