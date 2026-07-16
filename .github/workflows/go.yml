@@ -13,6 +13,6 @@ on:
 jobs:
 
   strongo_workflow:
-    uses: strongo/go-ci-action/.github/workflows/workflow.yml@main
+    uses: strongo/cicd/.github/workflows/workflow.yml@main
     secrets:
       gh_token: ${{ secrets.GITHUB_TOKEN }}
