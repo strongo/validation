@@ -214,7 +214,35 @@ func testHelperShouldBeCalledOnce(t *testing.T, testMock *TestMock) {
 		t.Errorf("t.Helper() should be called once, got called %v times", testMock.helper)
 	}
 }
+func TestIsBadFieldValueError(t *testing.T) {
+	if IsBadFieldValueError(errors.New("some random error")) {
+		t.Error("expected false for random error")
+	}
+	if !IsBadFieldValueError(NewErrBadRequestFieldValue("f1", "m1")) {
+		t.Error("expected true for bad request field value")
+	}
+	if !IsBadFieldValueError(NewErrBadRecordFieldValue("f2", "m2")) {
+		t.Error("expected true for bad record field value")
+	}
+}
+
 func TestMustBeFieldError(t *testing.T) {
+	t.Run("nil error", func(t *testing.T) {
+		testMock := new(TestMock)
+		MustBeFieldError(testMock, nil, "field1")
+		testHelperShouldBeCalledOnce(t, testMock)
+		if len(testMock.errorf) != 1 {
+			t.Errorf("t.Errorf() should be called once, got called %v times", len(testMock.errorf))
+		}
+	})
+	t.Run("mismatched field name", func(t *testing.T) {
+		testMock := new(TestMock)
+		MustBeFieldError(testMock, NewErrRecordIsMissingRequiredField("other_field"), "field1")
+		testHelperShouldBeCalledOnce(t, testMock)
+		if len(testMock.errorf) != 1 {
+			t.Errorf("t.Errorf() should be called once, got called %v times", len(testMock.errorf))
+		}
+	})
 	t.Run("should write a single error", func(t *testing.T) {
 		testMock := new(TestMock)
 		MustBeFieldError(testMock, errors.New("some error"), "field1")
